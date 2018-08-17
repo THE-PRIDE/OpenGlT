@@ -2,4 +2,6 @@
     <string name="app_name">OpenGlT</string>
 
     <string name="zip_test">测试解压</string>
+
+    <string name="rxjava_test">测试RXJAVA</string>
 </resources>
