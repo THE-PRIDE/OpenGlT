@@ -43,8 +43,7 @@ public class RxJavaActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (v.getId()){
             case R.id.tv_rxjava_test:
-                MyRxHelper.initData();
-//                MyRxHelper.RxFlowableTest();
+                MyRxHelper.RxFlowableTest();
                 break;
         }
     }

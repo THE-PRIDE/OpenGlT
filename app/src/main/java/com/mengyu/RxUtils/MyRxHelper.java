@@ -7,6 +7,9 @@ import com.google.gson.Gson;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
@@ -30,27 +33,37 @@ import io.reactivex.schedulers.Schedulers;
 public class MyRxHelper {
 
 
-    public static
+    public String initData() {
 
-
-    void initData() {
-
+        List<Person> personList = new ArrayList<>();
         Person person = new Person();
         person.setId(1);
         person.setName("jack");
         person.setSex("man");
 
+        Person person2 = new Person();
+        person2.setId(2);
+        person2.setName("sunny");
+        person2.setSex("woman");
+        Person person3 = new Person();
+        person3.setId(3);
+        person3.setName("olf");
+        person3.setSex("man");
         Team team = new Team();
         team.setNo(1);
         team.setTeamName("abc");
+        personList.add(person);
+        personList.add(person2);
+        personList.add(person3);
+        team.setListPerson(personList);
         team.setPerson(person);
+
         for (int i = 0; i < 3; i++) {
 
         }
 
         Gson gson = new Gson();
-        String string = gson.toJson(team);
-        Log.e("TEST",string);
+        return gson.toJson(team);
     }
 
 
