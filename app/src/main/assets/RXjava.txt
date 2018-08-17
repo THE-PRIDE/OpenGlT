@@ -1,0 +1,55 @@
+RXjava
+
+响应式编程：一种基于异步数据流概念的编程模式。（数据流就像一条河，可以被观测，被过滤，被操作，或者作为新的消费者与另一条流合并为一条新的流）
+
+Observable 被观察者
+Observer 观察者
+
+RxJava2.X  拥有了新的特性，其依赖于4个基础接口，分别是：
+
+	Publisher	发出一系列事件
+	Subscriber	处理事件
+	Subscription
+	Processor
+
+背压：在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观	察者降低发送速度的策略。
+
+两种观察者模式：
+Observable — Observer
+Flowable  — Subscriber  (支持背压) subscribe
+
+
+创建Observable时，回调的是ObservableEmitter,字面意思即发射器，并且直接throws Exception.
+其次，在创建的Observer中，也多了一个回调方法：onSubscribe,传递参数为Disposable,
+Disposable相当于RxJava1.x中的subscription，用于解除订阅。可以看到示例代码中，在i自增到2时，订阅关系被切断。
+
+
+何时使用Observable:
+最多1000个元素的数据流，即随着时间推移元素数量依然足够少以至于应用几乎没机会出现OOME。
+处理诸如鼠标移动或触摸事件之类的GUI事件：这些事件很少会合理地背压，也并不频繁。你可以使用Observable处理频率小于1000 Hz的事件，但最好考虑使用采样/去抖动。
+流本质上是同步的，但是您的平台不支持Java Streams，或者你忽略其中的功能。 使用Observable具有比Flowable更低的开销（你也可以考虑为Iterable流优化的IxJava 支持Java 6+）。
+
+何时使用Flowable:
+处理以某种方式生成的10k+元素，处理链可以告诉源限制元素生成的数量。
+从磁盘读取（解析）文件本质上是阻塞式和基于pull的，你可以很好地控制背压，例如从指定的请求量中读取多少行）。
+通过JDBC从数据库读取也是阻塞式和基于pull的，你可以根据每个下游请求调用ResultSet.next()来控制。
+网络(流)IO，其中网络帮助或使用的协议支持请求一些逻辑量。
+一些阻塞式和/或基于pull的数据源，最终会被一个非阻塞响应式的API/driver使用。
+
+
+Publisher是产生事件的事件源
+RxJava根据不同使用情况提供了几个事件源的类，其中Flowable就是Publisher的实现类：
+io.reactivex.Flowable: 0..N个流，支持Reactive-Streams和背压(backpressure)
+io.reactivex.Observable: 0..N个流，不支持背压(backpressure)
+io.reactivex.Single: 一个只包含一个item或error的流
+io.reactivex.Completable: 一个不包含任何item只包含completion或error信号的流
+io.reactivex.Maybe: 一个只包含一个maybe value或者error的流
+
+
+
+
+
+ 
+
+
+
