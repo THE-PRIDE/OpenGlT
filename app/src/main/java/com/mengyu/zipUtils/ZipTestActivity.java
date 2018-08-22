@@ -1,4 +1,4 @@
-package com;
+package com.mengyu.zipUtils;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -9,9 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.meng.openglt.R;
-import com.mengyu.zipUtils.ZipUtils;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;

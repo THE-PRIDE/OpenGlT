@@ -18,24 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-            <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ModelActivity"
-            android:theme="@android:style/Theme.Translucent" />
-
-        <!--  ZIP解压测试-->
-        <activity android:name="com.ZipTestActivity">
             <!--<intent-filter>-->
             <!--<action android:name="android.intent.action.MAIN" />-->
 
             <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
+        <activity
+            android:name=".ModelActivity"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <!--  ZIP解压测试-->
 
         <!-- RXJAVA  测试-->
         <activity android:name="com.mengyu.RxUtils.RxJavaActivity">
@@ -44,6 +37,22 @@
 
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
+        </activity>
+        <activity android:name="com.mengyu.opengl2.ModelActivity" />
+        <activity android:name="com.mengyu.opengl2.MainActivity" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name="com.mengyu.lottieUtils.MyLottieActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
     </application>
 
