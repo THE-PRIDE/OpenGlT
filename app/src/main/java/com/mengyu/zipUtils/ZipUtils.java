@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -208,5 +209,24 @@ public class ZipUtils {
     }
 
 
+    public static Vector<String> getFileName(String fileAbsolutePath) {
+        Vector<String> vecFile = new Vector<>();
+        File file = new File(fileAbsolutePath);
+
+        if (!file.isDirectory()){
+            return vecFile;
+        }
+        File[] subFile = file.listFiles();
+
+        for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
+            // 判断是否为文件夹
+            if (!subFile[iFileLength].isDirectory()) {
+                String filename = subFile[iFileLength].getName();
+                vecFile.add(filename);
+                Log.e("eee","文件名 ： " + filename);
+            }
+        }
+        return vecFile;
+    }
 }
 

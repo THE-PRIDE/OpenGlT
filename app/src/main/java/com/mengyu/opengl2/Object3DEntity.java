@@ -10,13 +10,11 @@ import java.nio.IntBuffer;
 import java.util.List;
 
 /**
- * Abstract class that implements all calls to opengl to draw objects
- * <p>
- * Subclasses must provide vertex shader and specify whether the shaders supports specific features
  *
- * @author andresoviedo
+ * 3D模型实体
+ *
  */
-public class Object3DEntity implements Object3D {
+public class Object3DEntity {
 
     // Transformations
     private final float[] mMatrix = new float[16];
@@ -24,7 +22,10 @@ public class Object3DEntity implements Object3D {
     private final float[] mvMatrix = new float[16];
     private final float[] mvpMatrix = new float[16];
     // OpenGL data
-    protected final int mProgram;
+    private final int mProgram;
+    private float[] DEFAULT_COLOR = { 1.0f, 1.0f, 1.0f, 1.0f };
+    private int COORDS_PER_VERTEX = 3;
+	private int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
     private double shift = -1d;
 
@@ -35,12 +36,10 @@ public class Object3DEntity implements Object3D {
         mProgram = GLUtil.createAndLinkProgram(vertexShader, fragmentShader, variables);
     }
 
-    @Override
     public void draw(Object3DData obj, float[] pMatrix, float[] vMatrix, int textureId) {
         this.draw(obj, pMatrix, vMatrix, obj.getDrawMode(), textureId);
     }
 
-    @Override
     public void draw(Object3DData obj, float[] pMatrix, float[] vMatrix, int drawMode, int textureId) {
 
         GLES20.glUseProgram(mProgram);

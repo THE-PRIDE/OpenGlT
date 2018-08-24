@@ -53,6 +53,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+/**
+ * 3D模型解析类
+ */
 public class WavefrontLoader {
 
     private static final float DUMMY_Z_TC = -5.0f;
@@ -89,7 +92,7 @@ public class WavefrontLoader {
         modelNm = nm;
         maxSize = 1.0F;
 
-        texCoords = new ArrayList<Tuple3>();
+        texCoords = new ArrayList<>();
 
 
         faceMats = new FaceMaterials();
@@ -174,7 +177,7 @@ public class WavefrontLoader {
 //                        System.out.println("Ignoring line " + lineNum + " : " + line);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
 //            Log.e("WavefrontLoader", "Problem reading line '" + (++lineNum) + "'");
 //            Log.e("WavefrontLoader", e.getMessage(), e);
             throw new RuntimeException(e);
@@ -287,16 +290,16 @@ public class WavefrontLoader {
 //                        System.out.println("Ignoring line " + lineNum + " : " + line);
                 }
             }
-        } catch (IOException e) {
-//            Log.e("WavefrontLoader", e.getMessage(), e);
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("TEST", e + "");
         }
 
         if (!isLoaded) {
 //            Log.e("WavefrontLoader", "Error loading model");
             throw new RuntimeException("Error loading model");
         }
-    } // end of readModel()
+    }
 
     /**
      * Parse the vertex and add it to the buffer. If the vertex cannot be parsed,
@@ -929,8 +932,8 @@ public class WavefrontLoader {
                     // the token
 
                     int vertIdx = Integer.parseInt(faceTokens[0]);
-					/*if (vertIdx > 65535){
-						Log.e("WavefrontLoader","Ignoring face because its out of range (>65535)");
+                    /*if (vertIdx > 65535){
+                        Log.e("WavefrontLoader","Ignoring face because its out of range (>65535)");
 						continue;
 					}*/
                     if (numSeps > 1) {
@@ -1009,17 +1012,18 @@ public class WavefrontLoader {
             if (matCount.containsKey(matName)) {
                 int i = (Integer) matCount.get(matName) + 1;
                 matCount.put(matName, i);
-            } else
+            } else{
                 matCount.put(matName, 1);
-        } // end of addUse()
+            }
+        }
 
         public String findMaterial(int faceIdx) {
-            return (String) faceMats.get(faceIdx);
+            return faceMats.get(faceIdx);
         }
 
         public void showUsedMaterials()
-		/*
-		 * List all the materials used by faces, and the number of faces that have used them.
+        /*
+         * List all the materials used by faces, and the number of faces that have used them.
 		 */ {
             System.out.println("No. of materials used: " + faceMats.size());
 

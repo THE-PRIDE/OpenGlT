@@ -16,13 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the basic 3D data necessary to build the 3D object
+ *  完成解析后的 3D模型的数据
  *
  * @author andres
  */
 public class Object3DData {
 
-    // opengl version to use to draw this object
     private int version = 5;
     /**
      * The directory where the files reside so we can build referenced files in the model like material and textures

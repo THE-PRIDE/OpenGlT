@@ -16,8 +16,8 @@ public class ModelSurfaceView extends GLSurfaceView {
 	public ModelSurfaceView(ModelActivity parent) {
 		super(parent);
 		this.parent = parent;
-		setEGLContextClientVersion(2);
-		mRenderer = new ModelRenderer(this);
+		setEGLContextClientVersion(2);//选择GLView版本
+		mRenderer = new ModelRenderer(this);//创建GLView的渲染器
 		setRenderer(mRenderer);
 		touchHandler = new TouchController(this, mRenderer);
 	}

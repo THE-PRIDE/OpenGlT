@@ -17,12 +17,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AssetManager assets = getApplicationContext().getAssets();
-        try {
-            InputStream inputStream = assets.open("");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        AssetManager assets = getApplicationContext().getAssets();
+//        try {
+//            InputStream inputStream = assets.open("");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         Intent intent = new Intent(MainActivity.this,ModelActivity.class);
         Bundle b = new Bundle();

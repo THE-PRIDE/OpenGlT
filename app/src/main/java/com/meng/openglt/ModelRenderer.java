@@ -32,14 +32,8 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 
 	private Object3DBuilder drawer;
 	// The wireframe associated shape (it should be made of lines only)
-	private Map<Object3DData, Object3DData> wireframes = new HashMap<Object3DData, Object3DData>();
 	// The loaded textures
-	private Map<byte[], Integer> textures = new HashMap<byte[], Integer>();
-	// The corresponding opengl bounding boxes and drawer
-	private Map<Object3DData, Object3DData> boundingBoxes = new HashMap<Object3DData, Object3DData>();
-	// The corresponding opengl bounding boxes
-	private Map<Object3DData, Object3DData> normals = new HashMap<Object3DData, Object3DData>();
-
+	private Map<byte[], Integer> textures = new HashMap<>();
 	// 3D matrices to project our 3D world
 	private final float[] modelProjectionMatrix = new float[16];
 	private final float[] modelViewMatrix = new float[16];
@@ -110,16 +104,8 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 		float ratio = (float) width / height;
 		Log.d(TAG, "projection: [" + -ratio + "," + ratio + ",-1,1]-near/far[1,10]");
 		Matrix.frustumM(modelProjectionMatrix, 0, -ratio, ratio, -1, 1, getNear(), getFar());
-
 		// Calculate the projection and view transformation
 		Matrix.multiplyMM(mvpMatrix, 0, modelProjectionMatrix, 0, modelViewMatrix, 0);
-	}
-
-	private int loaderShader(int type, String shaderCode) {
-		int shader = GLES20.glCreateShader(type);
-		GLES20.glShaderSource(shader, shaderCode);
-		GLES20.glCompileShader(shader);
-		return shader;
 	}
 
 	@Override
@@ -127,8 +113,6 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 
 		// Draw background color
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-
 		// recalculate mvp matrix according to where we are looking at now
 		camera.animate();
 		if (camera.hasChanged()) {
@@ -140,33 +124,16 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 			Matrix.multiplyMM(mvpMatrix, 0, modelProjectionMatrix, 0, modelViewMatrix, 0);
 			camera.setChanged(false);
 		}
-
 		SceneLoader scene = main.getModelActivity().getScene();
 		if (scene == null) {
 			// scene not ready
 			return;
 		}
-
-
 		// camera should know about objects that collision with it
 		camera.setScene(scene);
-
 		// animate scene
 		scene.onDrawFrame();
 
-		// draw light
-//		if (scene.isDrawLighting()) {
-//
-//			Object3DImpl lightBulbDrawer = (Object3DImpl) drawer.getPointDrawer();
-//
-//			float[] lightModelViewMatrix = lightBulbDrawer.getMvMatrix(lightBulbDrawer.getMMatrix(scene.getLightBulb()),modelViewMatrix);
-//
-//			// Calculate position of the light in eye space to support lighting
-//			Matrix.multiplyMV(lightPosInEyeSpace, 0, lightModelViewMatrix, 0, scene.getLightPosition(), 0);
-//
-//			// Draw a point that represents the light bulb
-//			lightBulbDrawer.draw(scene.getLightBulb(), modelProjectionMatrix, modelViewMatrix, -1, lightPosInEyeSpace);
-//		}
         lightPosInEyeSpace[0] = 5.0f;
         lightPosInEyeSpace[1] = 5.0f;
         lightPosInEyeSpace[2] = 5.0f;
@@ -176,10 +143,7 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 			Object3DData objData = null;
 			try {
 				objData = objects.get(i);
-				boolean changed = objData.isChanged();
-
 				Object3D drawerObject = drawer.getDrawer(objData, scene.isDrawTextures(), scene.isDrawLighting());
-
 				Integer textureId = textures.get(objData.getTextureData());
 				if (textureId == null && objData.getTextureData() != null) {
 					ByteArrayInputStream textureIs = new ByteArrayInputStream(objData.getTextureData());
@@ -187,64 +151,8 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 					textureIs.close();
 					textures.put(objData.getTextureData(), textureId);
 				}
-
-				if (scene.isDrawWireframe() && objData.getDrawMode() != GLES20.GL_POINTS
-						&& objData.getDrawMode() != GLES20.GL_LINES && objData.getDrawMode() != GLES20.GL_LINE_STRIP
-						&& objData.getDrawMode() != GLES20.GL_LINE_LOOP) {
-					// Log.d("ModelRenderer","Drawing wireframe model...");
-					try{
-						// Only draw wireframes for objects having faces (triangles)
-						Object3DData wireframe = wireframes.get(objData);
-						wireframe.setColor(new float[]{1.0f,0f,0f,1f});
-						if (wireframe == null || changed) {
-							Log.i("ModelRenderer","Generating wireframe model...");
-//							wireframe = Object3DBuilder.buildWireframe4(objData);
-//							wireframe.centerAndScale(5.0f);
-							wireframe = Object3DBuilder.buildWireframe(objData);
-							wireframes.put(objData, wireframe);
-						}
-						drawerObject.draw(wireframe,modelProjectionMatrix,modelViewMatrix,wireframe.getDrawMode(),
-								wireframe.getDrawSize(),textureId != null? textureId:-1, lightPosInEyeSpace);
-					}catch(Error e){
-						Log.e("ModelRenderer",e.getMessage(),e);
-					}
-				} else if (scene.isDrawPoints() || objData.getFaces() == null || !objData.getFaces().loaded()){
-					drawerObject.draw(objData, modelProjectionMatrix, modelViewMatrix
-							, GLES20.GL_POINTS, objData.getDrawSize(),
-							textureId != null ? textureId : -1, lightPosInEyeSpace);
-				} else {
-					drawerObject.draw(objData, modelProjectionMatrix, modelViewMatrix,
-							textureId != null ? textureId : -1, lightPosInEyeSpace);
-				}
-
-				// Draw bounding box
-				if (scene.isDrawBoundingBox() || scene.getSelectedObject() == objData) {
-					Object3DData boundingBoxData = boundingBoxes.get(objData);
-					if (boundingBoxData == null || changed) {
-						boundingBoxData = Object3DBuilder.buildBoundingBox(objData);
-						boundingBoxes.put(objData, boundingBoxData);
-					}
-					Object3D boundingBoxDrawer = drawer.getBoundingBoxDrawer();
-					boundingBoxDrawer.draw(boundingBoxData, modelProjectionMatrix, modelViewMatrix, -1, null);
-				}
-
-				// Draw bounding box
-				if (scene.isDrawNormals()) {
-					Object3DData normalData = normals.get(objData);
-					if (normalData == null || changed) {
-						normalData = Object3DBuilder.buildFaceNormals(objData);
-						if (normalData != null) {
-							// it can be null if object isnt made of triangles
-							normals.put(objData, normalData);
-						}
-					}
-					if (normalData != null) {
-						Object3D normalsDrawer = drawer.getFaceNormalsDrawer();
-						normalsDrawer.draw(normalData, modelProjectionMatrix, modelViewMatrix, -1, null);
-					}
-				}
-				// TODO: enable this only when user wants it
-				// obj3D.drawVectorNormals(result, modelViewMatrix);
+				drawerObject.draw(objData, modelProjectionMatrix, modelViewMatrix,
+						textureId != null ? textureId : -1, lightPosInEyeSpace);
 			} catch (Exception ex) {
 				Log.e("ModelRenderer","There was a problem rendering the object '"+objData.getId()+"':"+ex.getMessage(),ex);
 			}
@@ -258,14 +166,6 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
 
 	public int getHeight() {
 		return height;
-	}
-
-	public float[] getModelProjectionMatrix() {
-		return modelProjectionMatrix;
-	}
-
-	public float[] getModelViewMatrix() {
-		return modelViewMatrix;
 	}
 
 	public Camera getCamera() {

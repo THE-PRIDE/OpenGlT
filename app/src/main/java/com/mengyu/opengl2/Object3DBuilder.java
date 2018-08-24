@@ -1,7 +1,7 @@
 package com.mengyu.opengl2;
 
-import android.app.Activity;
 import android.content.res.AssetManager;
+import android.opengl.GLES20;
 import android.util.Log;
 
 import com.mengyu.opengl2.WavefrontLoader.FaceMaterials;
@@ -25,23 +25,119 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 
+/**
+ * 从文件中加载3D模型的工具
+ */
 public final class Object3DBuilder {
 
+    private File currentDir;
+    private String modelId;
+    private String assetsDir;
+    private ModelActivity parent;
+    private Callback callback;
 
     public interface Callback {
-        void onLoadError(Exception ex);
+        void onLoadStart();
 
         void onLoadComplete(Object3DData data);
 
-        void onBuildComplete(Object3DData data);
+//        void onBuildComplete(Object3DData data);
     }
 
     private static float[] DEFAULT_COLOR = {1.0f, 1.0f, 0, 1.0f};
 
     private Object3DEntity object3DEntity;
 
-    public Object3D getDrawer() throws IOException {
+    //开启子线程，进行解析操作
+    public void paseModel(ModelActivity parent, File file, String assetsDir, String modelId,
+                          Callback callback) {
 
+        this.assetsDir = assetsDir;
+        this.parent = parent;
+        this.callback = callback;
+        this.modelId  = file != null ? file.getName() : modelId;
+        this.currentDir = file != null ? file.getParentFile() : null;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                parse3DModel();
+            }
+        }).start();
+    }
+
+    //解析OBJ
+    private void parse3DModel() {
+        callback.onLoadStart();
+        // TODO 这里，为什么要获取两次IS bug
+        InputStream params0 = getInputStream();
+        WavefrontLoader wfl = new WavefrontLoader("");
+        wfl.analyzeModel(params0);
+        closeStream(params0);
+        wfl.allocateBuffers();
+        wfl.reportOnModel();
+        // create the 3D object
+        Object3DData data3D = new Object3DData(wfl.getVerts(), wfl.getNormals(), wfl.getTexCoords(), wfl.getFaces(),
+                wfl.getFaceMats(), wfl.getMaterials());
+        data3D.setId(modelId);
+        data3D.setCurrentDir(currentDir);
+        data3D.setAssetsDir(assetsDir);
+        data3D.setLoader(wfl);
+        data3D.setDrawMode(GLES20.GL_TRIANGLES);
+        data3D.setDimensions(data3D.getLoader().getDimensions());
+
+
+        InputStream params = getInputStream();
+        data3D.getLoader().loadModel(params);
+        closeStream(params);
+        // scale object
+        data3D.centerScale();
+        data3D.setScale(new float[]{5, 5, 5});
+        // draw triangles instead of points
+        data3D.setDrawMode(GLES20.GL_TRIANGLES);
+        // build 3D object buffers
+        try {
+            generateArrays(parent.getAssets(), data3D);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeStream(params);
+        }
+
+        callback.onLoadComplete(data3D);
+    }
+
+    //从文件中加载OBJ
+    private InputStream getInputStream() {
+        InputStream inputStream;
+        try {
+            if (currentDir != null) {
+                inputStream = new FileInputStream(new File(currentDir, modelId));
+                return inputStream;
+            } else if (assetsDir != null) {
+                inputStream = parent.getAssets().open(assetsDir + "/" + modelId);
+                return inputStream;
+            } else {
+                throw new IllegalArgumentException("没有正确的模型路径");
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(
+                    "There was a problem opening file/asset '" + (currentDir != null ? currentDir : assetsDir) + "/" + modelId + "'");
+        }
+    }
+
+    private void closeStream(InputStream stream) {
+        if (stream == null) return;
+        try {
+            if (stream != null) {
+                stream.close();
+            }
+        } catch (IOException ex) {
+            Log.e("LoaderTask", "Problem closing stream: " + ex.getMessage(), ex);
+        }
+    }
+
+    public Object3DEntity get3DEntity() throws IOException {
         if (object3DEntity == null) {
             object3DEntity = new Object3DEntity();
         }
@@ -258,13 +354,6 @@ public final class Object3DBuilder {
         return bb;
     }
 
-    public static void loadV6AsyncParallel(final Activity parent, final File file, final String assetsDir, final String assetName,
-                                           final Callback callback) {
-        final String modelId = file != null ? file.getName() : assetName;
-        final File currentDir = file != null ? file.getParentFile() : null;
-        if (modelId.toLowerCase().endsWith(".obj")) {
-            WavefrontLoader2.loadAsync(parent, currentDir, assetsDir, modelId, callback);
-        }
-    }
+
 }
 

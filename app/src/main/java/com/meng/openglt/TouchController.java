@@ -176,7 +176,7 @@ public class TouchController {
 		if (pointerCount == 1 && simpleTouch) {
             SceneLoader scene = view.getModelActivity().getScene();
             if (scene != null) {
-                scene.processTouch(x1,y1);
+//                scene.processTouch(x1,y1);
             }
 		}
 

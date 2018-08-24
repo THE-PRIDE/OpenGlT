@@ -14,7 +14,6 @@ public class ModelActivity extends Activity {
     private String paramAssetFilename;
     private String paramFilename;
     private ModelSurfaceView gLView;
-    private SceneLoader scene;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +22,12 @@ public class ModelActivity extends Activity {
         if (b != null) {
             this.paramAssetDir = b.getString("assetDir");
             this.paramAssetFilename = b.getString("assetFilename");
-            this.paramFilename = b.getString("uri");
+            this.paramFilename = b.getString("currentDir");
         }
         gLView = new ModelSurfaceView(this);
         setContentView(gLView);
         gLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);//为GLSurfaceView指定Alpha通道
-
-        scene = new SceneLoader(this);
-        scene.init();
+//        gLView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);//控制是否自动刷新
     }
 
     public File getParamFile() {
@@ -47,10 +44,6 @@ public class ModelActivity extends Activity {
 
     public String getParamFilename() {
         return paramFilename;
-    }
-
-    public SceneLoader getScene() {
-        return scene;
     }
 
     public ModelSurfaceView getgLView() {

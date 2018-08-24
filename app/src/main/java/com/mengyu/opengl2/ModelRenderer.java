@@ -7,7 +7,6 @@ import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -22,7 +21,8 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
     private final float near = 1f;
     private final float far = 100f;
 
-    private Object3DBuilder drawer;
+    private Object3DBuilder loaderUtils;
+    private Object3DParser parse3D;
     private Map<byte[], Integer> textures = new HashMap<>();
     private final float[] modelProjectionMatrix = new float[16];
     private final float[] modelViewMatrix = new float[16];
@@ -48,7 +48,9 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         camera = new Camera();
-        drawer = new Object3DBuilder();
+        loaderUtils = new Object3DBuilder();
+        parse3D =  new Object3DParser(main.getModelActivity());
+        parse3D.parse3D();
     }
 
     @Override
@@ -56,6 +58,8 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
         this.width = width;
         this.height = height;
         GLES20.glViewport(0, 0, width, height);
+
+        //设置观看模型的位置
         Matrix.setLookAtM(modelViewMatrix, 0,
                 camera.xPos, camera.yPos, camera.zPos,
                 camera.xView, camera.yView, camera.zView,
@@ -78,13 +82,13 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
             Matrix.multiplyMM(mvpMatrix, 0, modelProjectionMatrix, 0, modelViewMatrix, 0);
             camera.setChanged(false);
         }
-        SceneLoader scene = main.getModelActivity().getScene();
-        if (scene == null) {
+
+        if (parse3D.getObjects() == null ){
             return;
         }
-        Object3DData objData = scene.getObjects();
+        Object3DData objData = parse3D.getObjects();
         try {
-            Object3D drawerObject = drawer.getDrawer();
+            Object3DEntity object3DEntity = loaderUtils.get3DEntity();
             Integer textureId = textures.get(objData.getTextureData());
             if (textureId == null && objData.getTextureData() != null) {
                 ByteArrayInputStream textureIs = new ByteArrayInputStream(objData.getTextureData());
@@ -92,7 +96,7 @@ public class ModelRenderer implements GLSurfaceView.Renderer {
                 textureIs.close();
                 textures.put(objData.getTextureData(), textureId);
             }
-            drawerObject.draw(objData, modelProjectionMatrix, modelViewMatrix,
+            object3DEntity.draw(objData, modelProjectionMatrix, modelViewMatrix,
                     textureId != null ? textureId : -1);
         } catch (Exception ex) {
             Log.e("ModelRenderer", "There was a problem rendering the object '" + "':" + ex.getMessage(), ex);

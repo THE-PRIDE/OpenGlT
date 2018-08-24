@@ -71,14 +71,10 @@ public abstract class LoaderTask extends AsyncTask<Void, Integer, List<Object3DD
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		// this.dialog = ProgressDialog.show(this.parent, "Please wait ...", "Loading model data...", true);
-		// this.dialog.setTitle(modelId);
 		this.dialog.setMessage("Loading...");
 		this.dialog.setCancelable(false);
 		this.dialog.show();
 	}
-
-
 
 	@Override
 	protected List<Object3DData> doInBackground(Void... params) {

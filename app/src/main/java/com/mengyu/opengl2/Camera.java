@@ -306,12 +306,6 @@ public class Camera {
         this.changed = changed;
     }
 
-    @Override
-    public String toString() {
-        return "Camera [xPos=" + xPos + ", yPos=" + yPos + ", zPos=" + zPos + ", xView=" + xView + ", yView=" + yView
-                + ", zView=" + zView + ", xUp=" + xUp + ", yUp=" + yUp + ", zUp=" + zUp + "]";
-    }
-
     public synchronized void Rotate(float rotViewerZ) {
         if (rotViewerZ == 0) return;
         RotateImpl(rotViewerZ);

@@ -45,8 +45,5 @@ public class ModelSurfaceView extends GLSurfaceView {
 		return parent;
 	}
 
-	public ModelRenderer getModelRenderer(){
-		return mRenderer;
-	}
 
 }

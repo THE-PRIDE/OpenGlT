@@ -12,17 +12,6 @@ public final class GLUtil {
 
 	private static final String TAG = "GLUtil";
 
-	/**
-	 * Helper function to compile and link a program.
-	 * 
-	 * @param vertexShaderHandle
-	 *            An OpenGL handle to an already-compiled vertex shader.
-	 * @param fragmentShaderHandle
-	 *            An OpenGL handle to an already-compiled fragment shader.
-	 * @param attributes
-	 *            Attributes that need to be bound to the program.
-	 * @return An OpenGL handle to the program.
-	 */
 	public static int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle,
 			final String[] attributes) {
 		int programHandle = GLES20.glCreateProgram();
@@ -64,26 +53,10 @@ public final class GLUtil {
 		return programHandle;
 	}
 
-	/**
-	 * Utility method for compiling a OpenGL shader.
-	 * 
-	 * <p>
-	 * <strong>Note:</strong> When developing shaders, use the checkGlError() method to debug shader coding errors.
-	 * </p>
-	 * 
-	 * @param type
-	 *            - Vertex or fragment shader type.
-	 * @param shaderCode
-	 *            - String containing the shader code.
-	 * @return - Returns an id for the shader.
-	 */
 	public static int loadShader(int type, String shaderCode) {
 
-		// create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-		// or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
 		int shader = GLES20.glCreateShader(type);
 
-		// add the source code to the shader and compile it
 		GLES20.glShaderSource(shader, shaderCode);
 		GLES20.glCompileShader(shader);
 
@@ -91,14 +64,12 @@ public final class GLUtil {
 		GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
 		if (compiled[0] == 0) {
 			GLES20.glDeleteShader(shader);
-			Log.e("GLUtil", "Could not compile program: " + GLES20.glGetShaderInfoLog(shader) + " | " + shaderCode);
 		}
 
 		return shader;
 	}
 
 	public static int loadTexture(final InputStream is) {
-		Log.v("GLUtil", "Loading texture '" + is + "' from stream...");
 
 		final int[] textureHandle = new int[1];
 
@@ -109,9 +80,6 @@ public final class GLUtil {
 			Log.i("GLUtil", "Handler: " + textureHandle[0]);
 
 			final BitmapFactory.Options options = new BitmapFactory.Options();
-			// By default, Android applies pre-scaling to bitmaps depending on the resolution of your device and which
-			// resource folder you placed the image in. We don’t want Android to scale our bitmap at all, so to be sure,
-			// we set inScaled to false.
 			options.inScaled = false;
 
 			// Read in the resource
@@ -138,19 +106,6 @@ public final class GLUtil {
 		return textureHandle[0];
 	}
 
-	/**
-	 * Utility method for debugging OpenGL calls. Provide the name of the call just after making it:
-	 * 
-	 * <pre>
-	 * mColorHandle = GLES20.glGetUniformLocation(mProgram, &quot;vColor&quot;);
-	 * MyGLRenderer.checkGlError(&quot;glGetUniformLocation&quot;);
-	 * </pre>
-	 * 
-	 * If the operation is not successful, the check throws an error.
-	 * 
-	 * @param glOperation
-	 *            - Name of the OpenGL call to check.
-	 */
 	public static void checkGlError(String glOperation) {
 		int error;
 		while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {

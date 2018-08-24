@@ -239,9 +239,8 @@ public class WavefrontLoader {
         return bb;
     }
 
-    private void readModel(BufferedReader br)
     // parse the OBJ file line-by-line
-    {
+    private void readModel(BufferedReader br) {
         boolean isLoaded = true; // hope things will go okay
 
         int lineNum = 0;
@@ -351,7 +350,7 @@ public class WavefrontLoader {
 
     private boolean addTexCoord(String line, boolean isFirstTC)
     /*
-	 * Add the texture coordinate from the line "vt u v w" to the texCoords ArrayList. There may only be two tex coords
+     * Add the texture coordinate from the line "vt u v w" to the texCoords ArrayList. There may only be two tex coords
 	 * on the line, which is determined by looking at the first tex coord line.
 	 */ {
         if (isFirstTC) {
@@ -369,8 +368,8 @@ public class WavefrontLoader {
     } // end of addTexCoord()
 
     private boolean checkTC3D(String line)
-	/*
-	 * Check if the line has 4 tokens, which will be the "vt" token and 3 tex coords in this case.
+    /*
+     * Check if the line has 4 tokens, which will be the "vt" token and 3 tex coords in this case.
 	 */ {
         String[] tokens = line.split("\\s+");
         return (tokens.length == 4);

@@ -65,12 +65,13 @@ public class TouchController {
 
         switch (motionEvent.getActionMasked()) {
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_POINTER_UP:
-            case MotionEvent.ACTION_HOVER_EXIT:
-            case MotionEvent.ACTION_OUTSIDE:
+//            case MotionEvent.ACTION_CANCEL:
+//            case MotionEvent.ACTION_POINTER_UP:
+//            case MotionEvent.ACTION_HOVER_EXIT:
+//            case MotionEvent.ACTION_OUTSIDE:
                 // this to handle "1 simple touch"
                 if (lastActionTime > SystemClock.uptimeMillis() - 250) {
+
                 } else {
                     gestureChanged = true;
                     touchDelay = 0;
@@ -80,7 +81,6 @@ public class TouchController {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_HOVER_ENTER:
-                Log.d(TAG, "Gesture changed...");
                 gestureChanged = true;
                 touchDelay = 0;
                 lastActionTime = SystemClock.uptimeMillis();
@@ -190,7 +190,6 @@ public class TouchController {
 
         if (gestureChanged && touchDelay > 1) {
             gestureChanged = false;
-            Log.v(TAG, "Fin");
         }
         view.requestRender();
         return true;
