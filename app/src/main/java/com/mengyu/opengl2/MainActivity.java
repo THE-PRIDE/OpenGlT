@@ -14,7 +14,8 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
 
 
-    String absolutePath = Environment.getExternalStorageDirectory() + "/0000/纪念章";
+//    String absolutePath = Environment.getExternalStorageDirectory() + "/0000/纪念章";
+    String absolutePath = Environment.getExternalStorageDirectory() + "/0000/jintiao";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
             return "";
         }
         File[] subFile = file.listFiles();
+
+        if (subFile == null){
+            return "";
+        }
 
         for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
             // 判断是否为文件夹
