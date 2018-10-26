@@ -57,6 +57,13 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name="com.mengyu.okDownload.DownloadActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name="com.mengyu.pdfrender.PDFActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
