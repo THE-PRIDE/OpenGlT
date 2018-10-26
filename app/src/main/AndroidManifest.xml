@@ -35,11 +35,11 @@
 
         <!-- RXJAVA  测试-->
         <activity android:name="com.mengyu.RxUtils.RxJavaActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name="com.mengyu.opengl2.ModelActivity" />
         <activity android:name="com.mengyu.opengl2.MainActivity">
@@ -64,11 +64,11 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name="com.mengyu.pdfrender.PDFActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
     </application>
 
