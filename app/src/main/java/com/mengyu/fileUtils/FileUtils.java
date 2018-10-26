@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * 日志打印工具类
+ */
 public class FileUtils {
 
     private static String defaultPath = Environment.getExternalStorageDirectory() + "/lmy/";
