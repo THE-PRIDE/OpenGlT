@@ -58,4 +58,10 @@ public class NormalAdapter extends RecyclerView.Adapter<NormalAdapter.MyViewHold
     }
 
 
+    class lastListener{
+        public void isLast(){
+
+        }
+    }
+
 }

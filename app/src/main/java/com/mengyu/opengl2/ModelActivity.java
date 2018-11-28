@@ -2,7 +2,9 @@ package com.mengyu.opengl2;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Environment;
 
 import com.meng.openglt.R;
 
@@ -31,10 +33,12 @@ public class ModelActivity extends Activity {
             this.paramAssetFilename = b.getString("assetFilename");
             this.paramFilename = b.getString("currentDir");
         }
+//        this.paramFilename = Environment.getExternalStorageDirectory() + "/0000/android_1540429200_3030600738/jintiao.obj";
+
 //        gLView = new ModelSurfaceView(this);
         gLView.getActivity(ModelActivity.this);
         gLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);//为GLSurfaceView指定Alpha通道
-//        gLView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);//控制是否自动刷新
+        gLView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);//控制是否自动刷新
     }
 
     public File getParamFile() {

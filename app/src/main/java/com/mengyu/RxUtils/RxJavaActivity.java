@@ -1,5 +1,6 @@
 package com.mengyu.RxUtils;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.meng.openglt.R;
+import com.mengyu.pdfrender.PDFActivity;
 
 /**
  * Created by LMY on 18/8/17.
@@ -43,7 +45,9 @@ public class RxJavaActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (v.getId()){
             case R.id.tv_rxjava_test:
-                MyRxHelper.RxFlowableTest();
+                Intent intent = new Intent(RxJavaActivity.this, PDFActivity.class);
+                startActivity(intent);
+//                MyRxHelper.RxFlowableTest();
                 break;
         }
     }
