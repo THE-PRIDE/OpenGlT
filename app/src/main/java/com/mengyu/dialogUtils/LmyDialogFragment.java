@@ -21,7 +21,7 @@ import com.meng.openglt.R;
  * 使用DialogFragment至少需要实现onCreateView或者onCreateDialog方法。
  * onCreateView即使用定义的xml布局文件展示Dialog。onCreateDialog即利用AlertDialog或者Dialog创建出Dialog。
  */
-public class LmyDialogFragment extends DialogFragment implements View.OnClickListener{
+public class LmyDialogFragment extends DialogFragment implements View.OnClickListener {
 
     private View view;
     private TextView mTvDialogTitle;
@@ -31,7 +31,20 @@ public class LmyDialogFragment extends DialogFragment implements View.OnClickLis
     private TextView mTvDialogRight;
 
     private DialogClickListener clickListener;
+    private DialogInputListener inputListener;
 
+    public LmyDialogFragment() {
+    }
+
+    /**
+     * @param context
+     */
+    @SuppressLint("ValidFragment")
+    public LmyDialogFragment(Context context) {
+        view = LayoutInflater.from(context).inflate(R.layout.dialog_default_layout, null);
+        initView(view);
+        initListener();
+    }
 
     @Nullable
     @Override
@@ -39,7 +52,7 @@ public class LmyDialogFragment extends DialogFragment implements View.OnClickLis
 
         try {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -49,21 +62,7 @@ public class LmyDialogFragment extends DialogFragment implements View.OnClickLis
         return view;
     }
 
-    public LmyDialogFragment(){
-
-    }
-
-    /**
-     * @param context
-     */
-    @SuppressLint("ValidFragment")
-    public LmyDialogFragment(Context context){
-        view = LayoutInflater.from(context).inflate(R.layout.dialog_default_layout,null);
-        initView(view);
-        initListener();
-    }
-
-    private void initView(View view){
+    private void initView(View view) {
         mTvDialogTitle = view.findViewById(R.id.tv_dialog_title);
         mViewTitleLine = view.findViewById(R.id.view_title_line);
         mTvDialogContent = view.findViewById(R.id.tv_dialog_content);
@@ -71,35 +70,59 @@ public class LmyDialogFragment extends DialogFragment implements View.OnClickLis
         mTvDialogRight = view.findViewById(R.id.tv_dialog_right);
     }
 
-    private void initListener(){
+    private void initListener() {
         mTvDialogLeft.setOnClickListener(this);
         mTvDialogRight.setOnClickListener(this);
     }
 
-    public void setDialogTitle(String dialogTitle){
+    public void setDialogTitle(String dialogTitle) {
         mTvDialogTitle.setText(dialogTitle);
     }
 
-    public void setmTvDialogLeft(String dialogLeft){
+    public void setDialogLeft(String dialogLeft) {
         mTvDialogLeft.setText(dialogLeft);
     }
 
-    public void setmTvDialogRight(String dialogRight){
+    public void setDialogRight(String dialogRight) {
         mTvDialogRight.setText(dialogRight);
     }
 
     /**
      * 控制dialog是否可取消
+     *
      * @param canCancel 是否可取消
      */
-    public void setDialogCanCancel(boolean canCancel){
+    public void setDialogCanCancel(boolean canCancel) {
         this.setCancelable(canCancel);
     }
+
+    public void setClickListener(DialogClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public void setInputListener(DialogInputListener inputListener){
+        this.inputListener = inputListener;
+    }
+
+    public void setNeedDialogTitle(boolean needDialogTitle) {
+        if (needDialogTitle) {
+            mTvDialogTitle.setVisibility(View.VISIBLE);
+            mViewTitleLine.setVisibility(View.VISIBLE);
+        } else {
+            mTvDialogTitle.setVisibility(View.GONE);
+            mViewTitleLine.setVisibility(View.GONE);
+        }
+    }
+
+    public void setDialogContent(String dialogContent) {
+        mTvDialogContent.setText(dialogContent);
+    }
+
 
     /**
      * 控制取消dialog
      */
-    public void dialogDismiss(){
+    public void dialogDismiss() {
         this.dismissAllowingStateLoss();
         this.dismiss();  // 区别
 
@@ -110,9 +133,7 @@ public class LmyDialogFragment extends DialogFragment implements View.OnClickLis
 
     }
 
-    public void setClickListener(DialogClickListener clickListener){
-        this.clickListener = clickListener;
-    }
+
 
 //    @Override
 //    public void show(FragmentManager manager, String tag) {
@@ -133,15 +154,16 @@ public class LmyDialogFragment extends DialogFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_dialog_left:
-                if (null != clickListener){
+                if (null != clickListener) {
                     clickListener.DialogLeft();
+                    inputListener.dialogInput(mTvDialogContent.getText().toString());
                     this.dismiss();
                 }
                 break;
             case R.id.tv_dialog_right:
-                if (null != clickListener){
+                if (null != clickListener) {
                     clickListener.DialogRight();
                     this.dismiss();
                 }

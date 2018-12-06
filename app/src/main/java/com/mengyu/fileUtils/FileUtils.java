@@ -4,7 +4,9 @@ package com.mengyu.fileUtils;
 import android.os.Environment;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 /**
@@ -108,5 +110,31 @@ public class FileUtils {
         accessFile.write(strContent.getBytes());
         accessFile.close();
 
+    }
+
+
+
+    /**
+     * 将流写入到SD卡
+     * @param is 流
+     * @param file 文件目录
+     * @throws IOException IO异常
+     */
+    public static void writeBytesToFile(InputStream is, File file) throws IOException {
+        FileOutputStream fos = null;
+        try {
+            byte[] data = new byte[2048];
+            int nbread = 0;
+            fos = new FileOutputStream(file);
+            while ((nbread = is.read(data)) > -1) {
+                fos.write(data, 0, nbread);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+         } finally {
+            if (fos != null) {
+                fos.close();
+            }
+        }
     }
 }

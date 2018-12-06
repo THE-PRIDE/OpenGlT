@@ -1,4 +1,4 @@
-package com.mengyu.MyView;
+package com.mengyu.myView;
 
 import android.content.Context;
 import android.graphics.Canvas;

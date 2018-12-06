@@ -1,4 +1,4 @@
-package com.mengyu.MyView;
+package com.mengyu.myView;
 
 import android.os.Bundle;
 import android.os.Handler;

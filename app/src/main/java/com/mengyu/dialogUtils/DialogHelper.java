@@ -1,7 +1,5 @@
 package com.mengyu.dialogUtils;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,22 +8,16 @@ public class DialogHelper {
 
     private LmyDialogFragment dialogFragment;
 
-//    public static DialogHelper getInstence() {
-//
-//        dialogFragment.show();
-//        return new DialogHelper();
-//    }
-
-    private Object object;
     private FragmentManager fragmentManager;
 
-    private AppCompatActivity appCompatActivity;
-
-    public DialogHelper(Object object) {
-        dialogFragment = new LmyDialogFragment((Context) object);
-        this.appCompatActivity = (AppCompatActivity) object;
+    private DialogHelper(AppCompatActivity appCompatActivity) {
+        dialogFragment = new LmyDialogFragment(appCompatActivity);
         this.fragmentManager = appCompatActivity.getSupportFragmentManager();
-        this.object = object;
+    }
+
+    private DialogHelper(Fragment fragment){
+        dialogFragment = new LmyDialogFragment(fragment.getContext());
+        this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
     }
 
     public static DialogHelper with(AppCompatActivity appCompatActivity) {
@@ -34,11 +26,16 @@ public class DialogHelper {
 
     /**
      *  在fragment中
-     * @param fragment
-     * @return
+     * @param fragment 环境
+     * @return 返回实例
      */
     public static DialogHelper with(Fragment fragment){
         return new DialogHelper(fragment);
+    }
+
+    public DialogHelper needDialogTitle(boolean needTitle){
+        dialogFragment.setNeedDialogTitle(needTitle);
+        return this;
     }
 
     public DialogHelper setDialogTitle(String dialogTitle) {
@@ -46,13 +43,18 @@ public class DialogHelper {
         return this;
     }
 
+    public DialogHelper setDialogContent(String dialogContent){
+        dialogFragment.setDialogContent(dialogContent);
+        return this;
+    }
+
     public DialogHelper setDialogLeft(String dialogLeft){
-        dialogFragment.setmTvDialogLeft(dialogLeft);
+        dialogFragment.setDialogLeft(dialogLeft);
         return this;
     }
 
     public DialogHelper setDialogRight(String dialogRight){
-        dialogFragment.setmTvDialogRight(dialogRight);
+        dialogFragment.setDialogRight(dialogRight);
         return this;
     }
 
@@ -66,7 +68,13 @@ public class DialogHelper {
         return this;
     }
 
+    public DialogHelper setDialogInputListener(DialogInputListener inputListener){
+        dialogFragment.setInputListener(inputListener);
+        return this;
+    }
+
     public void showDialog(){
+        // TODO 执行onSaveInstanceState后，调用此方法，会抛异常，但是没遇到
         dialogFragment.show(fragmentManager,"");
     }
 }

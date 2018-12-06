@@ -3,16 +3,22 @@ package com.mengyu.dialogUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meng.openglt.R;
-import com.mengyu.toastUtils.ToastUtils;
+import com.mengyu.Utils.LogUtils;
+import com.mengyu.Utils.ToastUtils;
 
-public class DialogTestActivity extends AppCompatActivity{
+public class DialogTestActivity extends AppCompatActivity implements DialogInputListener{
 
-    private Button mBtnShowDialog;
+    private static final String TAG = "DialogTestActivity";
+
+    private TextView mBtnShowDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +31,7 @@ public class DialogTestActivity extends AppCompatActivity{
 
 //                LmyDialogFragment dialogFragment = new LmyDialogFragment();
 //                dialogFragment.show(getSupportFragmentManager(),"123");
+//                ToastUtils.show(DialogTestActivity.this,"确定");
 
                 showDialog();
             }
@@ -36,18 +43,22 @@ public class DialogTestActivity extends AppCompatActivity{
         super.onResume();
     }
 
-    private void showDialog(){
+    private void showDialog() {
 
         DialogHelper.with(this).setDialogCanCelable(false).setDialogLeft("确定").setDialogRight("取消")
+                .needDialogTitle(true).setDialogContent("弹框内容")
+                .setDialogInputListener(this)
                 .setDialogTitle("提示").setDialogClickListener(new DialogClickListener() {
             @Override
             public void DialogLeft() {
-                Toast.makeText(DialogTestActivity.this,"确定",Toast.LENGTH_SHORT).show();
+                ToastUtils.show(DialogTestActivity.this,"确定");
+                LogUtils.e(TAG,"确定");
             }
 
             @Override
             public void DialogRight() {
-                Toast.makeText(DialogTestActivity.this,"取消",Toast.LENGTH_SHORT).show();
+                ToastUtils.show(DialogTestActivity.this,"取消");
+                LogUtils.e(TAG,"取消");
             }
         }).showDialog();
 
@@ -66,6 +77,12 @@ public class DialogTestActivity extends AppCompatActivity{
         //保存状态后，一些commit将不可调用，可用允许状态丢失的commit代替
         super.onSaveInstanceState(outState);
 
-        ToastUtils.show(this,"onSaveInstanceState");
+        ToastUtils.show(this, "onSaveInstanceState");
+    }
+
+    @Override
+    public void dialogInput(String string) {
+        ToastUtils.show(this,string);
+        LogUtils.e(TAG,string);
     }
 }
